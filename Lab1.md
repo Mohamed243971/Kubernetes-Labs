@@ -1,4 +1,4 @@
-# Kubernetes Labs
+# Lab1
 
 ## Kubernetes Cluster Setup Documentation
 
