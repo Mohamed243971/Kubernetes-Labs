@@ -1,6 +1,8 @@
 # Kubernetes Lab Solution
 
-## Task 1: Kubectl Config (5 points)
+---
+
+## Task 1: Kubectl Config 
 
 ### a. Create a k3s Cluster (1 server + 1 agent)
 
@@ -21,163 +23,49 @@ Then join the agent:
 curl -sfL https://get.k3s.io | K3S_URL=https://<server-ip>:6443 K3S_TOKEN=<token> sh -
 ```
 
-Verify the cluster:
-```bash
-kubectl get nodes
-```
-
-Output:
-```
-NAME           STATUS     ROLES          AGE   VERSION
-k3s-worker-01  NotReady   <none>         24h   v1.34.6+k3s1
-server         Ready      control-plane  24h   v1.34.6+k3s1
-```
-
 ---
 
 ### b. Create a Namespace called `iti-46`
 
-**`iti-namespace.yaml`:**
-```yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: iti-46
-```
+Created a `iti-namespace.yaml` file and applied it to create the namespace in the cluster.
 
-Apply it:
-```bash
-kubectl apply -f iti-namespace.yaml
-# namespace/iti-46 created
-```
+![Namespace creation and cluster nodes](images/1.png)
 
 ---
 
 ### c. Edit kubectl Config — Add `iti-context`
 
-Edit `~/.kube/config` (or `/etc/rancher/k3s/k3s.yaml`) and add the new context:
+Edited the kubeconfig file to add a new context called `iti-context` that uses the `default` user with the `iti-46` namespace.
 
-**`kube-config.yaml`:**
-```yaml
-apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: <CA_DATA>
-    server: https://127.0.0.1:6443
-  name: default
-contexts:
-- context:
-    cluster: default
-    user: default
-  name: default
-- context:
-    cluster: default
-    user: default
-    namespace: iti-46
-  name: iti-context
-current-context: default
-kind: Config
-users:
-- name: default
-  user:
-    client-certificate-data: <CERT_DATA>
-    client-key-data: <KEY_DATA>
-```
+![kubeconfig with iti-context added](images/2.png)
 
 > **Note:** The new `iti-context` uses the `default` user and points to the `iti-46` namespace.
 
 ---
 
-## Task 2: Kubectl Plugin (5 points)
+## Task 2: Kubectl Plugin 
 
 ### Create `kubectl hostnames` Plugin
 
-Create the plugin file at `/usr/local/bin/kubectl-hostnames`:
+Created a bash script at `/usr/local/bin/kubectl-hostnames` that uses `kubectl` and `jq` to list all node hostnames in the cluster. Made it executable with `chmod +x`.
 
-```bash
-vim /usr/local/bin/kubectl-hostnames
-```
-
-**File content:**
 ```bash
 #!/bin/bash
 kubectl get nodes -o json | jq '.items[].metadata.name'
 ```
 
-Make it executable:
-```bash
-chmod +x /usr/local/bin/kubectl-hostnames
-```
-
-Run the plugin:
-```bash
-kubectl hostnames
-```
-
-Output:
-```
-"k3s-worker-01"
-"server"
-```
+![kubectl hostnames plugin creation and output](images/3.png)
 
 ---
 
-## Task 3: Creating Deployments (10 points)
+## Task 3: Creating Deployments 
 
-### a & b. Deployment with 3 Replicas + ENV Variable
+### a & b. Deployment YAML with 3 Replicas + ENV Variable `FOO=ITI`
 
-**`mydeployment.yaml`:**
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mydeployment
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx-container
-        image: nginx:alpine
-        env:
-        - name: FOO
-          value: "ITI"
-```
+Created `mydeployment.yaml` with:
+- **3 replicas** of `nginx:alpine`
+- Environment variable `FOO=ITI` injected into each pod
 
-Apply the deployment:
-```bash
-kubectl apply -f mydeployment.yaml
-# deployment.apps/mydeployment created
-```
+Applied it with `kubectl apply -f mydeployment.yaml` and verified all 3 pods are running with `kubectl get deployments`.
 
-Verify:
-```bash
-kubectl get deployments
-```
-
-Output:
-```
-NAME           READY   UP-TO-DATE   AVAILABLE   AGE
-mydeployment   3/3     3            3           43s
-```
-
-Confirm the `FOO` environment variable inside a pod:
-```bash
-kubectl exec <pod-name> -- env | grep FOO
-# FOO=ITI
-```
-
----
-
-## Enable kubectl Autocompletion (Bonus)
-
-```bash
-echo 'source <(kubectl completion bash)' >> ~/.bashrc
-source ~/.bashrc
-```
+![mydeployment.yaml content and successful deployment](images/4.png)
