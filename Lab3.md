@@ -15,6 +15,7 @@ sudo kubectl get pods -n iti-46 -o wide
 ```
 
 **Output:**
+
 ![pods](images/3-1.png)
 
 ---
@@ -29,6 +30,7 @@ sudo kubectl get svc -n iti-46
 ```
 
 **Output:**
+
 ![svc](images/3-2.png)
 
 ---
@@ -43,6 +45,7 @@ sudo kubectl get pods
 ```
 
 **Output:**
+
 ![test-pod](images/3-3.png)
 
 ---
@@ -57,6 +60,7 @@ nslookup -type=SRV _5000._tcp.web.iti-46.svc.cluster.local
 ```
 
 **Output:**
+
 ![srv](images/3-4.png)
 
 ---
@@ -70,6 +74,7 @@ wget -qO- http://web.iti-46.svc.cluster.local:5000
 ```
 
 **Output:**
+
 ![wget](images/3-5.png)
 
 ---
@@ -85,6 +90,7 @@ sudo iptables -t nat --list-rules | grep KUBE-SVC-
 ```
 
 **Output:**
+
 ![iptables](images/3-6.png)
 ---
 
@@ -101,6 +107,7 @@ sudo kubectl get all,ingress -n world
 ```
 
 **Output:**
+
 ![ingress](images/3-7.png)
 
 ---
@@ -115,6 +122,7 @@ curl http://192.168.88.128/banana
 ```
 
 **Output:**
+
 ![test](images/3-8.png)
 
 ---
