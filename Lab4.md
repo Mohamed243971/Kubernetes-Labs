@@ -99,4 +99,3 @@ sudo kubectl exec pod1 -- ls /etc/birke
 
 ---
 
-Successfully completed all requirements for Lab 4.
