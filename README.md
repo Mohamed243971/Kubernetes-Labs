@@ -1,5 +1,4 @@
-# ☸️ Kubernetes Administration Labs - ITI Journey
-
+# ☸️ Kubernetes Labs 
 ## 📌 Overview
 This repository documents my practical journey through Kubernetes administration. It contains step-by-step solutions, architectural implementations, and documentation for four comprehensive labs completed during my ITI scholarship. The labs cover everything from cluster bootstrapping to advanced networking, storage, and configuration management.
 
